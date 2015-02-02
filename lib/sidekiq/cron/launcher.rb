@@ -23,6 +23,7 @@ module Sidekiq
     def initialize(options)
       if options[:cron_poller].nil? || options[:cron_poller]
         @cron_poller  = Sidekiq::Cron::Poller.new
+        Sidekiq.logger.info("Sidekiq Cron initialized")
       end
       old_initialize options
     end
