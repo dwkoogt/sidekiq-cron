@@ -21,7 +21,9 @@ module Sidekiq
 
     #add cron poller and execute normal initialize of Sidekiq launcher
     def initialize(options)
-      @cron_poller  = Sidekiq::Cron::Poller.new
+      if options[:cron_poller].nil? || options[:cron_poller]
+        @cron_poller  = Sidekiq::Cron::Poller.new
+      end
       old_initialize options
     end
 
@@ -32,7 +34,9 @@ module Sidekiq
     #execute normal run of launcher and run cron poller
     def run
       old_run
-      cron_poller.async.poll(true)
+      if cron_poller
+        cron_poller.async.poll(true)
+      end
     end
 
 
@@ -41,7 +45,9 @@ module Sidekiq
 
     #execute normal stop of launcher and stop cron poller
     def stop
-      cron_poller.async.terminate if poller.alive?
+      if cron_poller
+        cron_poller.async.terminate if poller.alive?
+      end
       old_stop
     end
 
